@@ -9,12 +9,13 @@ from typing import List, Optional
 import aiohttp
 import json
 
-def create_openai_client(credential: AsyncTokenCredential) -> AsyncAzureOpenAI:
+def create_openai_client(credential: AsyncTokenCredential, openAIKey: str) -> AsyncAzureOpenAI:
     token_provider = get_bearer_token_provider(credential, "https://cognitiveservices.azure.com/.default")
     return AsyncAzureOpenAI(
         api_version="2024-04-01-preview",
         azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
-        azure_ad_token_provider=token_provider
+        api_key=openAIKey
+        #azure_ad_token_provider=token_provider
     )
 
 def create_search_client(credential: AsyncTokenCredential) -> SearchClient:
@@ -130,3 +131,7 @@ class ChatThread:
 
     def get_last_message_sources(self) -> Optional[List[object]]:
         return self.search_results[-1]["sources"] if len(self.search_results) > 0 else None
+    
+    def printMessages(self) -> Optional[str]:
+        print(self.messages) if len(self.search_results) > 0 else print ("No messages to display")
+    

@@ -23,6 +23,7 @@ keyvault_url = os.getenv("AZURE_KEYVAULT_URL")
 secret_client = SecretClient(vault_url=keyvault_url, credential=DefaultAzureCredential())
 subscriptionGUID = secret_client.get_secret(os.getenv("AZURE_KEYVAULT_SECRET_NAME")).value
 searchKey = secret_client.get_secret(os.getenv("AZURE_KEYVAULT_SEARCHKEY")).value
+openAIKey = secret_client.get_secret(os.getenv("AZURE_OPENAI_ENDPOINT_KEY")).value
 
 # Phi-3 Chat Example
 print("\n Connecting to Azure AI Studio instance to fetch Phi-3 deployment \n")
@@ -63,7 +64,7 @@ chat_deployment = os.getenv("AZURE_OPENAI_GPT4_DEPLOYMENT_NAME") # replace with 
 
 print("\n Searching and displaying results using GPT model...")
 async def gptchat_caller():
-    async with azure.identity.aio.DefaultAzureCredential() as credential, create_search_client(AzureKeyCredential(searchKey)) as search_client, create_openai_client(credential) as openai_client:
+    async with azure.identity.aio.DefaultAzureCredential() as credential, create_search_client(AzureKeyCredential(searchKey)) as search_client, create_openai_client(credential, openAIKey) as openai_client:
         await chat_thread.append_grounded_message(
             search_client=search_client,
             query="What is included in my Northwind Health Plus plan that is not in standard?",
@@ -73,5 +74,9 @@ async def gptchat_caller():
             k=k)
         await chat_thread.get_openai_response(openai_client=openai_client, model=chat_deployment, max_new_tokens=1024)
 
+asyncio.run(gptchat_caller())
 print("\n GPT Chat output: \n")
 print(chat_thread.get_last_message()["content"])
+
+# print("\n Comparison of messages: \n")
+# print(chat_thread.printMessages())
