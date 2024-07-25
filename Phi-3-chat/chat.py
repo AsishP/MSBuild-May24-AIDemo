@@ -107,7 +107,7 @@ class ChatThread:
         )
         self.append_message(role="assistant", message=response.choices[0].message.content)
 
-    async def get_phi3_response(self, endpoint_scoring_uri: str, endpoint_authorization: str, deployment: str, temperature: float = 0.7, top_p: float = 0.9, do_sample: bool = True, max_new_tokens: int = 256):
+    async def get_phi3_response(self, endpoint_scoring_uri: str, endpoint_authorization: str, temperature: float = 0.7, top_p: float = 0.9, do_sample: bool = True, max_new_tokens: int = 256):
         headers = {
             "Authorization": endpoint_authorization,
             "Content-Type":"application/json"
@@ -115,6 +115,26 @@ class ChatThread:
         
         data = {
                 "messages": self.messages,
+                "temperature": temperature,
+                "top_p": top_p,
+                "max_tokens": max_new_tokens
+            }
+
+        async with aiohttp.ClientSession() as session:
+            async with session.post(url=endpoint_scoring_uri, headers=headers, json=data) as response:
+                response.raise_for_status()
+                response_body = await response.json()
+                self.append_message(role="assistant", message=response_body["choices"][0]["message"]["content"])
+    
+    async def get_phi3v_response(self, endpoint_scoring_uri: str, endpoint_authorization: str, deployment: str, messages: str, temperature: float = 0.7, top_p: float = 0.9, do_sample: bool = True, max_new_tokens: int = 256):
+        headers = {
+            "Authorization": endpoint_authorization,
+            "Content-Type":"application/json",
+            "azureml-model-deployment" : deployment
+        }
+        
+        data = {
+                "messages": messages,
                 "temperature": temperature,
                 "top_p": top_p,
                 "max_tokens": max_new_tokens
