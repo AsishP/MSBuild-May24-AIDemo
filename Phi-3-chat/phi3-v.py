@@ -39,27 +39,9 @@ phi3_key = workspace_ml_client.online_endpoints.get_keys(name=os.getenv("AZUREAI
 
 chat_thread = ChatThread()
 
-choice = input("Enter the choice of Messages to use: \n 1. Car Scratch analysis \n 2. Sceneic Description \n 3. Shelf with Defects \n")
+choice = input("Enter the number from below categories to analyse: \n 1. Car Scratch analysis \n 2. Sceneic Description \n 3. Shelf with Defects \n")
 
 messages1 = [
-        {
-            "role": "user",
-            "content": [
-                {
-                    "type": "image_url",
-                    "image_url": {
-                        "url": "https://apstorimages01.blob.core.windows.net/images/carscratch2.jpg"
-                    },
-                },
-                {
-                    "type": "text",
-                    "text": "Detail the scratch in the shown picture and return a JSON output with defect brief and locating the scratch in X, Y coordinates.",
-                },
-            ],
-        }
-    ]
-
-messages2 = [
         {
             "role": "user",
             "content": [
@@ -84,6 +66,24 @@ messages3 = [
                 {
                     "type": "image_url",
                     "image_url": {
+                        "url": "https://apstorimages01.blob.core.windows.net/images/CokeShelfWithDefects.png"
+                    },
+                },
+                {
+                    "type": "text",
+                    "text": "Analyse the image for Coke cans with defects and return a JSON output with defect brief and locating the scratch in X, Y coordinates.",
+                },
+            ],
+        }
+    ]
+
+messages2 = [
+        {
+            "role": "user",
+            "content": [
+                {
+                    "type": "image_url",
+                    "image_url": {
                         "url": "https://apstorimages01.blob.core.windows.net/images/deerpic1.jpg"
                     },
                 },
@@ -101,7 +101,7 @@ async def chat_caller():
         endpoint_scoring_uri=phi3_url.replace("/score", "") + "/v1/chat/completions", #phi3_url.replace("/score", "") + "/v1/chat/completions"
         endpoint_authorization="Bearer " + phi3_key,
         deployment=os.getenv("AZUREAI_PHI3V_DEPLOYMENT_NAME"),
-        messages = messages1 if choice == 1 else messages2 if choice == 2 else messages3,
+        messages = messages1 if int(choice) == 1 else messages2 if int(choice) == 2 else messages3,
         max_new_tokens=2048)
 
 asyncio.run(chat_caller())
