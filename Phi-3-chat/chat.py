@@ -130,10 +130,11 @@ class ChatThread:
         headers = {
             "Authorization": endpoint_authorization,
             "Content-Type":"application/json",
-            "azureml-model-deployment" : deployment
+            ##"azureml-model-deployment" : deployment
         }
         
         data = {
+                "model": deployment,
                 "messages": messages,
                 "temperature": temperature,
                 "top_p": top_p,

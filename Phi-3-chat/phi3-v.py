@@ -98,7 +98,7 @@ messages3 = [
 print("\n Searching and displaying results using Phi-3 V model ...")
 async def chat_caller():
     await chat_thread.get_phi3v_response(
-        endpoint_scoring_uri=phi3_url + "/v1/chat/completions",
+        endpoint_scoring_uri=phi3_url.replace("/score", "") + "/v1/chat/completions", #phi3_url.replace("/score", "") + "/v1/chat/completions"
         endpoint_authorization="Bearer " + phi3_key,
         deployment=os.getenv("AZUREAI_PHI3V_DEPLOYMENT_NAME"),
         messages = messages1 if choice == 1 else messages2 if choice == 2 else messages3,
