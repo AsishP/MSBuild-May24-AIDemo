@@ -10,7 +10,7 @@ import asyncio
 from chat import ChatThread, create_search_client, create_openai_client, SearchType
 
 ## Load variables and environment variables
-print("\n Loading Variables: \n")
+print("\n Loading Variables...")
 load_dotenv()
 k=50
 search_type="text"
@@ -18,7 +18,7 @@ use_semantic_reranker=False
 sources_to_include=5
 
 ## Get secrets from Azure Key Vault
-print("\n Fetching values from Key Vault \n")
+print("\n Fetching values from Key Vault...")
 keyvault_url = os.getenv("AZURE_KEYVAULT_URL")
 secret_client = SecretClient(vault_url=keyvault_url, credential=DefaultAzureCredential())
 subscriptionGUID = secret_client.get_secret(os.getenv("AZURE_KEYVAULT_SECRET_NAME")).value
@@ -26,7 +26,7 @@ searchKey = secret_client.get_secret(os.getenv("AZURE_KEYVAULT_SEARCHKEY")).valu
 openAIKey = secret_client.get_secret(os.getenv("AZURE_OPENAI_ENDPOINT_KEY")).value
 
 # Phi-3 Chat Example
-print("\n Connecting to Azure AI Studio instance to fetch Phi-3 deployment \n")
+print("\n Connecting to Azure AI Studio instance to fetch Phi-3 deployment..")
 workspace_ml_client = MLClient(
     DefaultAzureCredential(),
     subscription_id=subscriptionGUID,
